@@ -30,7 +30,7 @@ public class Application {
             switch (input){ // 메인메뉴 동작
                 case 1 : // 이름, 번호, 메일, 메모, 그룹 입력
 
-                    System.out.println("등록을 시작합니다.");
+                    System.out.println("등록을 시작합니다. '1'을 눌러주세요.");
                     int mo = sc.nextInt();
                     sc.nextLine();
 

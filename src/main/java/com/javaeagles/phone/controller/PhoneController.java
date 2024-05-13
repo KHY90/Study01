@@ -50,15 +50,29 @@ public class PhoneController {
         PhoneDTO ph = null; // 강제 초기화
         PhNameDTO phName = null;
 
+//        try {
+//            if( name.matches("[a-zA-Z0-9]+|[ㄱ-ㅎㅏ]+")){
+//                System.out.println("잘못 입력하셧습니다.");
+//            }else if(name != null && name.trim().isEmpty()){ // trim()은 문자열에서 앞뒤의 공백을 제거합니다.
+//                System.out.println("공백입니다.");
+//            }
+//            else {
+//                ph = phoneService.phoneFindByName(name);
+//                System.out.println(ph);}
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         try {
-            if( name.matches("[a-zA-Z0-9]+")){
-                System.out.println("잘못 입력하셧습니다.");
-            }else if(name != null && name.trim().isEmpty()){
-                System.out.println("공백입니다.");
-            }
-            else {
+            if (name.matches("[a-zA-Z]+")) { // 영어로 된 이름인 경우
                 ph = phoneService.phoneFindByName(name);
-                System.out.println(ph);}
+                System.out.println(ph);
+            } else if (name.matches("[ㄱ-ㅎㅏ]+")) { // 한글 자모로 된 이름인 경우
+                System.out.println("잘못 입력하셧습니다.");
+            } else if (name != null && name.trim().isEmpty()) { // 공백인 경우
+                System.out.println("공백입니다.");
+            } else { // 그 외의 경우
+                System.out.println("잘못 입력하셨습니다.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -157,5 +171,5 @@ public class PhoneController {
             }
         }
     }
-
+    
 }

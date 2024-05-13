@@ -134,9 +134,7 @@ public class PhoneRepository {
 
         try {
 //            con = getConnection();
-
             pstmt = con.prepareStatement(query);
-
             pstmt.setString(1, ph.getUserName());
             pstmt.setString(2, ph.getUserEmail());
             pstmt.setString(3, ph.getUserMemo());
@@ -149,11 +147,9 @@ public class PhoneRepository {
             pstmt2 = con.prepareStatement(query2);
             pstmt2.setString(1, ph.getPhone());
             pstmt2.setString(2, ph.getPhoneName());
-
 //            if (ph.getPhone() == null || ph.getPhone().isEmpty()) {
 //                throw new IllegalArgumentException("전화번호를 입력해주세요."); // exception으로 보냄
 //            }
-
             result2 = pstmt2.executeUpdate();
 
         } catch (SQLException e) {

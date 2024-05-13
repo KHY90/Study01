@@ -51,7 +51,7 @@ public class PhoneController {
         PhNameDTO phName = null;
 
         try {
-            if( name.matches("[a-zA-Z]+")){
+            if( name.matches("[a-zA-Z0-9]+")){
                 System.out.println("잘못 입력하셧습니다.");
             }else if(name != null && name.trim().isEmpty()){
                 System.out.println("공백입니다.");

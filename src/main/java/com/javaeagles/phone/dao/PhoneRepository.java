@@ -16,12 +16,11 @@ import static com.javaeagles.common.JDBCTemplate.getConnection;
 
 public class PhoneRepository {
 
-
-    private Properties pros =new Properties();
-    private Connection con = null;
-    private PreparedStatement pstmt = null;
-    private PreparedStatement pstmt2 = null;
-    private ResultSet rset = null;
+    private Properties pros = new Properties(); // 쿼리를 읽어오는 프로퍼티 객체
+    private Connection con = null; // 데이터베이스 연결을 위한 Connection 객체
+    private PreparedStatement pstmt = null; // SQL 쿼리를 실행하기 위한 PreparedStatement 객체
+    private PreparedStatement pstmt2 = null; // 또 다른 SQL 쿼리를 실행하기 위한 PreparedStatement 객체
+    private ResultSet rset = null; // 쿼리 결과를 저장하는 ResultSet 객체
 
     public PhoneRepository(){
         try {
@@ -33,11 +32,11 @@ public class PhoneRepository {
 
     public ArrayList phoneViewAll(){
         ArrayList arrayList = new ArrayList();
-        String query = pros.getProperty("phoneAll");
-        con = getConnection();
+        String query = pros.getProperty("phoneAll");    // xml에 있는 pros를 참조해서 phoneAll 불러오고 쿼리에 저장.
+        con = getConnection();                          // db이랑 연결시켜준다.
         try {
-            pstmt = con.prepareStatement(query);
-            rset = pstmt.executeQuery();
+            pstmt = con.prepareStatement(query);        // xml에 있는 명령어들을 데이터베이스와 연결시켜 실행 후 pstmt에 저장
+            rset = pstmt.executeQuery();                // executeQuery 쿼리를 실행시켜주는 함수
             while (rset.next()){
                 PhoneDTO ph = new PhoneDTO();
                 ph.setUserCode(rset.getInt("USER_CODE"));
@@ -78,6 +77,12 @@ public class PhoneRepository {
                 ph.setPhone(rset.getString("PHONE"));
                 ph.setPhoneName(rset.getString("PHONE_NAME"));
             }
+//            else {
+//                // 조회된 정보가 없는 경우
+//                System.out.println("없는 번호 입니다."); // 프린트 문으로 나옴
+
+//                throw new RuntimeException("없는 번호 입니다."); // 오류로 보냄
+//            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
@@ -85,7 +90,6 @@ public class PhoneRepository {
             close(pstmt);
             close(con);
         }
-
         return ph;
     }
 
@@ -98,6 +102,7 @@ public class PhoneRepository {
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, index);
             rset = pstmt.executeQuery();
+
             if(rset.next()){
                 ph = new PhoneDTO();
                 ph.setUserCode(rset.getInt("USER_CODE"));
@@ -115,9 +120,9 @@ public class PhoneRepository {
             close(pstmt);
             close(rset);
         }
-
         return ph;
     }
+
     public int phoneInsert(PhoneDTO ph) {
         String query = pros.getProperty("phoneInsert");
         String query2 = pros.getProperty("phoneInsert2");
@@ -128,21 +133,28 @@ public class PhoneRepository {
         int result2 = 0;
 
         try {
-            con = getConnection();
-
+//            con = getConnection();
 
             pstmt = con.prepareStatement(query);
+
             pstmt.setString(1, ph.getUserName());
             pstmt.setString(2, ph.getUserEmail());
             pstmt.setString(3, ph.getUserMemo());
             pstmt.setString(4, ph.getUserGroup());
+//            if (ph.getUserName() == null || ph.getUserName().isEmpty()) {
+//                throw new IllegalArgumentException("이름을 입력해주세요."); // exception으로 보냄
+//            }
             result1 = pstmt.executeUpdate();
 
             pstmt2 = con.prepareStatement(query2);
             pstmt2.setString(1, ph.getPhone());
             pstmt2.setString(2, ph.getPhoneName());
-            result2 = pstmt2.executeUpdate();
 
+//            if (ph.getPhone() == null || ph.getPhone().isEmpty()) {
+//                throw new IllegalArgumentException("전화번호를 입력해주세요."); // exception으로 보냄
+//            }
+
+            result2 = pstmt2.executeUpdate();
 
         } catch (SQLException e) {
             try {
@@ -188,26 +200,6 @@ public class PhoneRepository {
         return result;
     }
 
-//    public int phoneDelete(String name, String index) {
-//        // 쿼리불러오기
-//        String query = pros.getProperty("phoneDelete");
-//        con = getConnection(); // 쿼리 실행
-//        int result = 0;
-//        try {
-//            pstmt = con.prepareStatement(query); // 쿼리 읽기
-//            pstmt.setString(1, name);
-//            pstmt.setString(2, index);
-//            result = pstmt.executeUpdate();
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }finally {
-//            close(con);
-//            close(pstmt);
-//        }
-//        return result;
-//    }
-
     public int phoneDelete(String name){
         String query = pros.getProperty("phoneDelete");
         con = getConnection();
@@ -225,6 +217,5 @@ public class PhoneRepository {
         }
         return result;
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.javaeagles.phone.controller;
 
+import com.javaeagles.phone.dto.PhNameDTO;
 import com.javaeagles.phone.dto.PhoneDTO;
 import com.javaeagles.phone.service.PhoneService;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PhoneController {
+
     private static PhoneService phoneService;
 
     public PhoneController() {
@@ -27,39 +29,75 @@ public class PhoneController {
         }
     }
 
-    public static void phoneFindByName() {
+//    public static void phoneFindByName() {
+//        Scanner sc = new Scanner(System.in);
+//        System.out.print("이름을 입력하세요 : ");
+//        String name = sc.nextLine();
+//        PhoneDTO ph = null; // 강제 초기화
+//
+//        try {
+//            ph = phoneService.phoneFindByName(name);
+//            System.out.println(ph);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    public static void phoneFindByName(){
         Scanner sc = new Scanner(System.in);
         System.out.print("이름을 입력하세요 : ");
         String name = sc.nextLine();
         PhoneDTO ph = null; // 강제 초기화
+        PhNameDTO phName = null;
 
         try {
-            ph = phoneService.phoneFindByName(name);
-            System.out.println(ph);
+            if( name.matches("[a-zA-Z]+")){
+                System.out.println("잘못 입력하셧습니다.");
+            }else if(name != null && name.trim().isEmpty()){
+                System.out.println("공백입니다.");
+            }
+            else {
+                ph = phoneService.phoneFindByName(name);
+                System.out.println(ph);}
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-
-    public static void phoneInsert() {
+    public static void phoneInsert(){
         Scanner sc = new Scanner(System.in);
         PhoneDTO ph = new PhoneDTO();
 
-        System.out.println("등록할 전화번호의 정보를 입력해주세요 ");
-        System.out.print("이름 : ");
-        ph.setUserName(sc.nextLine());
+        while (true) {
+            System.out.println("등록할 전화번호의 정보를 입력해주세요 ");
+            System.out.print("이름 : ");
+            String userName = sc.nextLine();
+            if (userName == null || userName.isEmpty()) {
+                System.out.println("이름이 입력되지 않았습니다. 다시 입력해주세요.");
+                continue;
+            }
+            ph.setUserName(userName);
+            break;
+        }
         System.out.print("이메일 : ");
         ph.setUserEmail(sc.nextLine());
         System.out.print("메모 : ");
         ph.setUserMemo(sc.nextLine());
         System.out.print("그룹 : ");
         ph.setUserGroup(sc.nextLine());
-        System.out.print("전화번호 : ");
-        ph.setPhone(sc.nextLine());
+
+        while (true) {
+            System.out.print("전화번호 : ");
+            String phone = sc.nextLine();
+            if (phone == null || phone.isEmpty()) {
+                System.out.println("전화번호가 입력되지 않았습니다. 다시 입력해주세요.");
+                continue;
+            }
+            ph.setPhone(phone);
+            break;
+        }
         System.out.print("전화번호 이름 : ");
         ph.setPhoneName(sc.nextLine());
-
         try {
             String result = phoneService.phoneInsert(ph);
             System.out.println(result);
@@ -70,12 +108,12 @@ public class PhoneController {
 
     public static void phoneUpdate() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("변경할 전화번호를 입력하세요");
+        System.out.println("변경할 이름을 입력하세요");
         String index = sc.nextLine();
         PhoneDTO ph = phoneService.phoneFindById(index);
 
         if (ph == null) {
-            System.out.println("변경할 사원이 존재하지 않습니다.");
+            System.out.println("변경할 번호가 존재하지 않습니다.");
             return;
         }
         System.out.println(ph);
@@ -94,11 +132,30 @@ public class PhoneController {
         System.out.print("삭제할 연락처의 이름을 입력하세요 : ");
         String name = sc.nextLine();
 
+        PhoneDTO ph = null; // 강제 초기화
+
         try {
-            phoneService.phoneDelete(name);
-            System.out.println("삭제가 완료되었습니다.");
+            ph = phoneService.phoneFindByName(name);
+            System.out.println(ph);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        if(ph == null) {
+            System.out.println("삭제할 전화번호가 존재하지 않습니다.");
+        }else {
+            System.out.print("삭제하시겠습니까? ( yes / no ) : ");
+            String check = sc.nextLine();
+            if (check.equalsIgnoreCase("yes")) {
+                try {
+                    phoneService.phoneDelete(name);
+                    System.out.println("삭제가 완료되었습니다.");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                System.out.println("다시 시도해주세요.");
+            }
+        }
     }
+
 }

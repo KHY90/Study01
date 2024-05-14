@@ -43,6 +43,7 @@ public class PhoneView {
                     phoneDelete();
                     break;
             }
+
             System.out.print("종료를 하시겠습니까? (yes Or no) : ");
             String result = sc.nextLine();
             // equalsIgnoreCase : 대소문자 둘 다 읽어준다.
